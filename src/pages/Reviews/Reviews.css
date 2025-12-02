@@ -1,0 +1,41 @@
+/* src/pages/Reviews/Reviews.css */
+.reviews-page {
+    padding: 20px;
+  }
+  
+  .reviews-page h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .review-preview {
+    display: block;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.3s ease;
+  }
+  
+  .review-preview:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.02);
+  }
+  
+  .review-preview h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  .review-preview p {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .review-preview:hover {
+    text-decoration: none;
+    color: #007bff;
+  }
+  

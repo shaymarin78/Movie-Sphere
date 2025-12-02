@@ -1,0 +1,32 @@
+.recommended {
+  padding: 30px;
+  background-color: #141414;
+  color: white;
+}
+
+.recommended h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.movie-card {
+  cursor: pointer;
+  width: 180px;
+  text-align: center;
+}
+
+.movie-card img {
+  width: 100%;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.movie-card:hover img {
+  transform: scale(1.05);
+}

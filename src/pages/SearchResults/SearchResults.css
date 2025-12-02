@@ -1,0 +1,56 @@
+/* src/pages/SearchResults/SearchResults.css */
+
+.search-results {
+  padding: 2rem;
+  color: white;
+  background-color: #121212;
+  min-height: 100vh;
+}
+
+.search-results h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  text-align: center;
+  color: #f9f9f9;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.movie-card {
+  text-decoration: none;
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  color: white;
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-bottom: 1px solid #333;
+}
+
+.movie-card h3 {
+  font-size: 1rem;
+  margin: 0.5rem 1rem 0 1rem;
+  color: #ffffff;
+}
+
+.movie-card p {
+  font-size: 0.875rem;
+  margin: 0.25rem 1rem 1rem 1rem;
+  color: #aaaaaa;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+  

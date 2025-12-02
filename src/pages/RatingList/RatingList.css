@@ -1,0 +1,62 @@
+/* src/pages/RatingList/RatingList.css */
+.rating-list {
+    padding: 20px;
+  }
+  
+  .rating-list h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+  
+  .rating-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .rating-filter button {
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .rating-filter button.active {
+    background-color: #0056b3;
+  }
+  
+  .rating-filter button:hover {
+    background-color: #0056b3;
+  }
+  
+  .movie-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  
+  .movie-card {
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .movie-card img {
+    width: 100%;
+    border-radius: 4px;
+  }
+  
+  .movie-card .movie-info h4 {
+    margin: 10px 0;
+    font-size: 1.1rem;
+  }
+  
+  .movie-card .movie-info p {
+    font-size: 0.9rem;
+    color: #777;
+  }
+    

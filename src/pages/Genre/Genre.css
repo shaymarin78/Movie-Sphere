@@ -1,0 +1,60 @@
+.genre-page {
+    padding: 50px;
+    color: white;
+    background-color: #121212;
+    min-height: 100vh;
+  }
+  
+  .genre-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  
+  .genre-button {
+    padding: 8px 16px;
+    background-color: #2c2c2c;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .genre-button:hover {
+    background-color: #444;
+  }
+  
+  .genre-title {
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .genre-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .genre-card {
+    background-color: #1e1e1e;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .genre-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .genre-card img {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+   

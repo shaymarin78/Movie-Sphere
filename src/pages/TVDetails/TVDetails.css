@@ -1,0 +1,115 @@
+.tv-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #121212;
+    color: #ffffff;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.tv-image {
+    margin-bottom: 20px;
+}
+
+.tv-poster {
+    width: 300px;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.tv-info {
+    max-width: 800px;
+    text-align: center;
+}
+
+.tv-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.tv-meta {
+    font-size: 0.9rem;
+    color: #ccc;
+    margin-bottom: 10px;
+}
+.tv-overview {
+    margin-top: 20px;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 800px;
+    text-align: justify;
+  }
+
+.tv-genres {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.tv-genre {
+    background-color: #333;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #fff;
+}
+
+.tv-overview {
+    margin-top: 20px;
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 800px;
+    text-align: justify;
+}
+
+.watchlist-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.add-to-watchlist, .add-to-watched {
+    background-color: #ff5c5c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.add-to-watchlist:hover, .add-to-watched:hover {
+    background-color: #ff2e2e;
+}
+
+.added-to-watchlist, .added-to-watched {
+    background-color: #28a745;
+    color: white;
+    cursor: not-allowed;
+}
+
+.added-to-watchlist:hover, .added-to-watched:hover {
+    background-color: #28a745;
+}
+   
+.action-message {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #1e8e3e;
+    color: white;
+    border-radius: 6px;
+    font-size: 16px;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
