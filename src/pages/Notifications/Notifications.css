@@ -1,0 +1,158 @@
+.notification-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-icon {
+  font-size: 1.9rem;
+  cursor: pointer;
+  color: white;
+  transition: 0.3s ease;
+}
+
+.notification-icon:hover {
+  transform: scale(1.1);
+  color: #ff5c5c;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  background: #ff3b3b;
+  padding: 3px 7px;
+  border-radius: 50%;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.notification-panel {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  width: 330px;
+  max-height: 450px;
+  overflow-y: auto;
+  background: #1c1c1c;
+  color: white;
+  border-radius: 10px;
+  padding: 15px;
+  z-index: 999;
+  animation: slideDown 0.3s ease;
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.15);
+}
+
+.notification-panel h3 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #ff8266;
+}
+
+.empty-msg {
+  text-align: center;
+  color: #aaa;
+  margin-top: 20px;
+}
+
+.notification-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.notification-item {
+  display: flex;
+  gap: 12px;
+  background: #222;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.notification-item:hover {
+  background: #2e2e2e;
+  transform: translateX(5px);
+}
+
+.notif-poster {
+  width: 55px;
+  border-radius: 5px;
+}
+
+.notif-info h4 {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.notif-info p {
+  margin: 3px 0 0;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
+.upcoming {
+  color: #ffcb05;
+}
+
+.released {
+  color: #4caf50;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.notification-item:hover {
+  background: #2d2d2d;
+  transform: translateX(4px);
+  cursor: pointer;
+}
+
+.notification-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.notification-panel::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 3px;
+}
+
+.notification-panel::-webkit-scrollbar-track {
+  background: #1c1c1c;
+}
+/* TYPE BADGE */
+.notif-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.type-badge {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.type-badge.movie {
+  background: #ff5722;
+  color: white;
+}
+
+.type-badge.tv {
+  background: #2196f3;
+  color: white;
+}
+
+

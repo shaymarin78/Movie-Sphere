@@ -1,5 +1,5 @@
 .movie-details {
-  padding: 40px 20px;
+  padding: 60px 20px;
   background-color: #121212;
   color: white;
   min-height: 100vh;
@@ -22,10 +22,14 @@
   margin-bottom: 20px;
 }
 
-.movie-title {
-  font-size: 2rem;
+/* Increase movie title size */
+/* Make movie title bigger */
+.movie-info .movie-title {
+  font-size: 2.5rem !important; /* force bigger size */
   font-weight: bold;
   margin: 10px 0;
+  text-align: center; /* center horizontally */
+  flex-shrink: 0; /* prevent shrinking in flex layouts */
 }
 
 .movie-meta {
@@ -51,12 +55,96 @@
 
 .movie-genre {
   background-color: #333;
-  padding: 5px 10px;
+  padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.8rem;
   color: #fff;
 }
 
+/* WATCHLIST BUTTONS */
+.watchlist-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.add-to-watchlist,
+.add-to-watched {
+  background-color: #ff5c5c;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.3s;
+}
+
+.add-to-watchlist:hover,
+.add-to-watched:hover {
+  background-color: #ff2e2e;
+}
+
+/* DISABLED BUTTON STATES */
+.added-to-watchlist,
+.added-to-watched {
+  background-color: #28a745;
+  cursor: not-allowed;
+}
+
+.added-to-watchlist:hover,
+.added-to-watched:hover {
+  background-color: #28a745;
+}
+
+/* SUCCESS MESSAGE */
+.action-message {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #1e8e3e;
+  color: white;
+  border-radius: 6px;
+  font-size: 16px;
+  animation: fadeIn 0.3s ease-in-out;
+  align-items: center;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* REVIEW & TRAILER BUTTONS */
+.review-link,
+.player-link {
+  display: inline-block;
+  margin: 15px 8px 0;
+  padding: 10px 16px;
+  background-color: #444;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.review-link:hover,
+.player-link:hover {
+  background-color: #666;
+}
+
+/* Center review and trailer buttons */
+/* Center the Review & Trailer buttons */
+.button-container,
+.movie-info > div[style*="margin-top: 12px"] {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* RESPONSIVE */
 @media (min-width: 768px) {
   .movie-details {
     flex-direction: row;
@@ -66,74 +154,58 @@
     text-align: left;
   }
 
-  .movie-header {
-    align-items: flex-start;
-  }
-
   .movie-header img {
     width: 400px;
   }
 }
 
-.watchlist-buttons {
+/* USER RATING STARS */
+.user-rating {
+  margin: 20px 0;
   display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-top: 20px;
+  align-items: center;
+  font-size: 1.2rem;
 }
 
-.add-to-watchlist, .add-to-watched {
-  background-color: #ff5c5c;
+.user-rating p {
+  margin-right: 10px;
+  font-weight: 500;
+  color: #ccc;
+}
+
+.user-rating span {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.user-rating span:hover,
+.user-rating span:hover ~ span {
+  color: #ffc107; /* highlight on hover */
+}
+
+/* USER RATING STARS SELECTED */
+.user-rating span.selected {
+  color: #ffc107;
+}
+
+/* MOBILE ADJUSTMENTS */
+@media (max-width: 767px) {
+  .user-rating {
+    font-size: 1rem;
+  }
+}
+
+.rating-dropdown {
+  background-color: #52cfb2;
   color: white;
   border: none;
-  padding: 10px 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-.add-to-watchlist:hover, .add-to-watched:hover {
-  background-color: #ff2e2e;
-}
-
-.added-to-watchlist, .added-to-watched {
-  background-color: #28a745;
-  color: white;
-  cursor: not-allowed;
-}
-
-.added-to-watchlist:hover, .added-to-watched:hover {
-  background-color: #28a745;
-}
-
-.action-message {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #1e8e3e;
-  color: white;
-  border-radius: 6px;
-  font-size: 16px;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.review-link {
-  display: inline-block;
-  margin-top: 15px;
   padding: 10px 16px;
-  background-color: #444;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.review-link:hover {
-  background-color: #666;
+.rating-dropdown:hover {
+  background-color: #346369;
 }
-

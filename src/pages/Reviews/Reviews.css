@@ -1,41 +1,89 @@
-/* src/pages/Reviews/Reviews.css */
 .reviews-page {
-    padding: 20px;
-  }
-  
-  .reviews-page h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .review-preview {
-    display: block;
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 15px;
-    text-decoration: none;
-    color: #333;
-    transition: all 0.3s ease;
-  }
-  
-  .review-preview:hover {
-    background-color: #f0f0f0;
-    transform: scale(1.02);
-  }
-  
-  .review-preview h4 {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-  }
-  
-  .review-preview p {
-    font-size: 0.9rem;
-    color: #666;
-  }
-  
-  .review-preview:hover {
-    text-decoration: none;
-    color: #007bff;
-  }
-  
+  padding: 60px 20px;
+}
+
+.reviews-page h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.review-preview {
+  display: block;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-decoration: none;
+  color: #333;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  max-height: 80px; /* collapsed height */
+  overflow: hidden;
+}
+
+.review-preview.expanded {
+  max-height: 1000px; /* expanded height */
+}
+
+.review-preview:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.02);
+}
+
+.review-preview h4 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.review-preview p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+.add-review {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.add-review textarea {
+  padding: 10px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.add-review button {
+  width: 120px;
+  padding: 8px;
+  border: none;
+  background-color: #5cb85c;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s ease;
+}
+
+.add-review button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.delete-btn {
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-top: 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+  background: #d9363e;
+}

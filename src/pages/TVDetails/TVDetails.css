@@ -1,115 +1,217 @@
+/* MAIN CONTAINER (same as movie details) */
 .tv-details {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* stack on mobile by default */
     align-items: center;
     background-color: #121212;
     color: #ffffff;
     padding: 2rem;
     min-height: 100vh;
+    gap: 40px;
 }
 
+/* SIDE-BY-SIDE FOR DESKTOP */
+@media (min-width: 768px) {
+    .tv-details {
+        padding: 70px 20px;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* POSTER IMAGE SECTION */
 .tv-image {
     margin-bottom: 20px;
+    flex-shrink: 0; /* keep size fixed */
 }
 
 .tv-poster {
-    width: 300px;
+    width: 440px;
     border-radius: 1rem;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.08);
     margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.tv-poster:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(255, 92, 92, 0.3);
+}
+
+/* INFO SECTION */
 .tv-info {
-    max-width: 800px;
+    padding: 20px;
+    max-width: 1200px;
+    flex: 1; /* take remaining space */
     text-align: center;
 }
 
+/* TITLE */
 .tv-title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
+    font-size: 2.2rem;
+    margin-bottom: 0.6rem;
     color: #ffffff;
+    font-weight: bold;
 }
 
+/* META DETAILS: release date, rating */
 .tv-meta {
-    font-size: 0.9rem;
-    color: #ccc;
+    font-size: 1rem;
+    color: #cccccc;
     margin-bottom: 10px;
 }
+
+/* OVERVIEW */
 .tv-overview {
     margin-top: 20px;
     font-size: 1rem;
-    line-height: 1.6;
-    max-width: 800px;
-    text-align: justify;
-  }
+    line-height: 1.7;
+    text-align: center;
+    color: #dddddd;
+}
 
+/* GENRES */
 .tv-genres {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 10px;
     margin-top: 15px;
+    justify-content: center;
 }
 
 .tv-genre {
-    background-color: #333;
-    padding: 5px 10px;
+    background-color: #1d1d1d;
+    padding: 6px 12px;
     border-radius: 20px;
-    font-size: 0.8rem;
-    color: #fff;
+    font-size: 0.85rem;
+    color: #ff8866;
+    border: 1px solid #333;
+    transition: background 0.3s ease;
 }
 
-.tv-overview {
-    margin-top: 20px;
-    font-size: 1rem;
-    line-height: 1.6;
-    max-width: 800px;
-    text-align: justify;
+.tv-genre:hover {
+    background-color: #292929;
 }
 
+/* WATCHLIST BUTTONS */
 .watchlist-buttons {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 25px;
+    flex-wrap: wrap;
 }
 
-.add-to-watchlist, .add-to-watched {
+.add-to-watchlist,
+.add-to-watched {
     background-color: #ff5c5c;
     color: white;
     border: none;
-    padding: 10px 20px;
+    padding: 12px 22px;
     font-size: 1rem;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    border-radius: 6px;
+    transition: 0.3s ease;
+    font-weight: bold;
 }
 
-.add-to-watchlist:hover, .add-to-watched:hover {
+.add-to-watchlist:hover,
+.add-to-watched:hover {
     background-color: #ff2e2e;
 }
 
-.added-to-watchlist, .added-to-watched {
+/* DISABLED STATE WHEN ADDED */
+.added-to-watchlist,
+.added-to-watched {
     background-color: #28a745;
     color: white;
     cursor: not-allowed;
 }
 
-.added-to-watchlist:hover, .added-to-watched:hover {
+.added-to-watchlist:hover,
+.added-to-watched:hover {
     background-color: #28a745;
 }
-   
+
+/* USER RATING DROPDOWN */
+.user-rating {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.rating-dropdown {
+    padding: 6px 10px;
+    border-radius: 6px;
+    background-color: #1d1d1d;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.rating-dropdown option {
+    background-color: #121212;
+    color: #fff;
+}
+
+/* ACTION MESSAGE (same styling as movie success message) */
 .action-message {
-    margin-top: 10px;
-    padding: 8px 16px;
+    margin-top: 12px;
+    padding: 10px 20px;
     background-color: #1e8e3e;
     color: white;
     border-radius: 6px;
     font-size: 16px;
-    animation: fadeIn 0.3s ease-in-out;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* RATE BUTTON */
+.rate-button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    background-color: #5cf7ff;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.rate-button:hover {
+    background-color: #384e56;
+}
+
+/* REVIEW LINK */
+.review-link,
+.player-link {
+    display: inline-block;
+    margin-top: 12px;
+    margin-right: 10px;
+    padding: 8px 14px;
+    background-color: #444;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.review-link:hover,
+.player-link:hover {
+    background-color: #666;
+}

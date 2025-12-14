@@ -19,9 +19,20 @@ const Home = () => {
             <img src={hero_title} alt="" className='caption-img' />
             <p>“Let me tell you something my friend. Hope is a dangerous thing. Hope can drive a man insane.”- Convicted of murdering his wife and her lover, Andy Dufresne tries to survive prison by clinging to hope — and befriending a fellow lifer named Red.</p>
             <div className="hero-btns">
-                <button className='btn'><img src={play_icon} alt="" />Play</button>
-                <button className='btn dark-btn'><img src={info_icon} alt="" />More Info</button>
-            </div>
+  <a
+    href="https://www.youtube.com/watch?v=PLl99DlL6b4"
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <button className='btn'>
+      <img src={play_icon} alt="" />Play
+    </button>
+  </a>
+  <button className='btn dark-btn'>
+    <img src={info_icon} alt="" />More Info
+  </button>
+</div>
+
             <TitleCards/>
         </div>
       </div>

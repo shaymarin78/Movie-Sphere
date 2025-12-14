@@ -1,126 +1,246 @@
-import React, { useEffect, useState } from 'react';
-import { auth } from '../../firebase';
-import './UserProfile.css';
+// src/pages/UserProfile/UserProfile.jsx
+import React, { useEffect, useState } from "react";
+import { auth, db, updateUserProfile, updateWatchlist } from "../../firebase";
+import { doc, setDoc, onSnapshot } from "firebase/firestore";
+import { Link, useNavigate } from "react-router-dom";
+import "./UserProfile.css";
+import avatar1 from "../../assets/avatar1.jpg";
+import avatar2 from "../../assets/avatar2.jpg";
+import avatar3 from "../../assets/avatar3.jpg";
+import avatar4 from "../../assets/avatar4.jpg";
+import avatar5 from "../../assets/avatar5.jpg";
+import avatar6 from "../../assets/avatar6.jpg";
 
 const UserProfile = () => {
-  const [user, setUser] = useState(null);
-  const [watchList, setWatchList] = useState({
-    planToWatch: [],
-    watched: []
-  });
-  const [selectedItemDetails, setSelectedItemDetails] = useState(null);
-  const [loadingDetails, setLoadingDetails] = useState(false);
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [nameInput, setNameInput] = useState("");
+  const [profilePreview, setProfilePreview] = useState("");
+  const [loadingSave, setLoadingSave] = useState(false);
+  const [actionMsg, setActionMsg] = useState("");
 
-  // Bearer token for API requests
-  const BEARER_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTI0NjY1ZGY4YzI5NWU3YzFlZDg1YjQwMDQ2MTg1YyIsIm5iZiI6MTc0NjA0NTgzMC4xMDYsInN1YiI6IjY4MTI4Yjg2MTE1YjkyYTczMmEwZWJhZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iuBlFIRD2TRTPWN1BF7MiJopk3IaAe51zo6mX8q52oM'; // Make sure to use the correct token
+  const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
 
+  // Load user data
   useEffect(() => {
     const currentUser = auth.currentUser;
-    if (currentUser) {
-      setUser(currentUser);
+    if (!currentUser) return;
 
-      const savedWatchList = JSON.parse(localStorage.getItem(currentUser.uid)) || {
-        planToWatch: [],
-        watched: []
-      };
-      setWatchList(savedWatchList);
-    }
+    const userRef = doc(db, "users", currentUser.uid);
+
+    const unsubscribe = onSnapshot(userRef, async (snap) => {
+      if (!snap.exists()) {
+        const defaultDoc = {
+          uid: currentUser.uid,
+          name: currentUser.displayName || "",
+          email: currentUser.email || "",
+          profilePic: avatars[0],
+          planToWatch: [],
+          watched: [],
+        };
+        await setDoc(userRef, defaultDoc);
+        setUserData(defaultDoc);
+        setNameInput(defaultDoc.name);
+        setProfilePreview(defaultDoc.profilePic);
+      } else {
+        const data = snap.data();
+        setUserData(data);
+        setNameInput(data.name || "");
+        setProfilePreview(data.profilePic || avatars[0]);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  // Handle add to Plan to Watch or Watched
-  const handleAddToWatchList = (type, media) => {
-    if (type === 'planToWatch' && !watchList.watched.some(item => item.id === media.id)) {
-      const updatedList = { ...watchList };
-      updatedList.planToWatch.push(media); // Add to Plan to Watch
-      setWatchList(updatedList);
-      localStorage.setItem(user.uid, JSON.stringify(updatedList));
-    } else if (type === 'watched' && !watchList.planToWatch.some(item => item.id === media.id)) {
-      const updatedList = { ...watchList };
-      updatedList.watched.push(media); // Add to Watched
-      setWatchList(updatedList);
-      localStorage.setItem(user.uid, JSON.stringify(updatedList));
-    }
-  };
-
-  // Handle fetching details for Movie or TV Show when clicked
-  const fetchDetails = async (id, type) => {
-    setLoadingDetails(true);
+  // Save profile updates
+  const handleSaveProfile = async () => {
+    if (!userData) return;
+    setLoadingSave(true);
 
     try {
-      const endpoint = type === 'movie' 
-        ? `https://api.themoviedb.org/3/movie/${id}?language=en-US`
-        : `https://api.themoviedb.org/3/tv/${id}?language=en-US`;
+      const updates = {};
+      if (nameInput && nameInput !== userData.name) updates.name = nameInput;
+      if (profilePreview && profilePreview !== userData.profilePic) updates.profilePic = profilePreview;
 
-      const res = await fetch(endpoint, {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer ${BEARER_TOKEN}`
-        }
-      });
-      const data = await res.json();
-      setSelectedItemDetails(data);
+      if (Object.keys(updates).length > 0) {
+        await updateUserProfile(userData.uid, updates);
+        setActionMsg("Profile updated ✅");
+        setTimeout(() => setActionMsg(""), 2500);
+      }
+
+      setEditing(false);
     } catch (err) {
-      console.error('Error fetching details:', err);
+      console.error("Save profile failed:", err);
+      setActionMsg("Failed to save profile ❌");
+      setTimeout(() => setActionMsg(""), 3000);
     } finally {
-      setLoadingDetails(false);
+      setLoadingSave(false);
     }
   };
 
-  if (!user) return <p>Loading user profile...</p>;
+  // Watchlist actions
+  const handleRemoveFromList = async (id) => {
+    if (!userData) return;
+    try {
+      const updated = {
+        planToWatch: userData.planToWatch.filter((i) => i.id !== id),
+        watched: userData.watched.filter((i) => i.id !== id),
+      };
+      await updateWatchlist(userData.uid, updated);
+    } catch (err) {
+      console.error("Remove item error:", err);
+    }
+  };
+
+  const handleMoveToWatched = async (item) => {
+    if (!userData) return;
+
+    const newPlan = userData.planToWatch.filter((i) => i.id !== item.id);
+    const newWatched = userData.watched.some((i) => i.id === item.id)
+      ? userData.watched
+      : [...userData.watched, { ...item, viewed: true }];
+
+    await updateWatchlist(userData.uid, {
+      planToWatch: newPlan,
+      watched: newWatched,
+    });
+  };
+
+  const handleMoveToPlan = async (item) => {
+    if (!userData) return;
+
+    const newWatched = userData.watched.filter((i) => i.id !== item.id);
+    const newPlan = userData.planToWatch.some((i) => i.id === item.id)
+      ? userData.planToWatch
+      : [...userData.planToWatch, { ...item, viewed: false }];
+
+    await updateWatchlist(userData.uid, {
+      planToWatch: newPlan,
+      watched: newWatched,
+    });
+  };
+
+  if (!userData) return <p>Loading profile...</p>;
+
+  const getPosterUrl = (item) =>
+    item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : "/default-poster.png";
+  const getYear = (item) => (item.release_date || item.first_air_date || "").split("-")[0];
 
   return (
     <div className="user-profile">
       <h2>User Profile</h2>
-      <p><strong>Name:</strong> {user.displayName || "N/A"}</p>
-      <p><strong>Email:</strong> {user.email}</p>
 
-      {/* Watchlist - Plan to Watch and Watched */}
-      <div className="watchlist-section">
-        <h3>Plan to Watch</h3>
-        <ul>
-          {watchList.planToWatch.length === 0
-            ? <li>No movies or shows yet.</li>
-            : watchList.planToWatch.map((item, index) => (
-              <li key={index}>
-                <button onClick={() => fetchDetails(item.id, item.media_type || 'movie')}>{item.title || item.name}</button>
-              </li>
-            ))}
-        </ul>
+      <div className="profile-top">
+        <div className="profile-picture">
+          <img src={profilePreview || avatars[0]} alt="profile" className="profile-img" />
+        </div>
 
-        <h3>Watched</h3>
-        <ul>
-          {watchList.watched.length === 0
-            ? <li>No movies or shows watched yet.</li>
-            : watchList.watched.map((item, index) => (
-              <li key={index}>
-                <button onClick={() => fetchDetails(item.id, item.media_type || 'movie')}>{item.title || item.name}</button>
-              </li>
-            ))}
-        </ul>
+        <div className="profile-info">
+          {!editing ? (
+            <>
+              <h3>{userData.name || "No name"}</h3>
+              <p>{userData.email}</p>
+              <button onClick={() => setEditing(true)}>Edit Profile</button>
+            </>
+          ) : (
+            <>
+              <label>
+                Name:
+                <input type="text" value={nameInput} onChange={(e) => setNameInput(e.target.value)} />
+              </label>
+
+              <label>
+                Choose Avatar:
+                <div className="avatar-options">
+                  {avatars.map((icon, idx) => (
+                    <img
+                      key={idx}
+                      src={icon}
+                      alt={`avatar ${idx + 1}`}
+                      className={`avatar-choice ${profilePreview === icon ? "selected" : ""}`}
+                      onClick={() => setProfilePreview(icon)}
+                    />
+                  ))}
+                </div>
+              </label>
+
+              <div style={{ marginTop: 8 }}>
+                <button onClick={handleSaveProfile} disabled={loadingSave}>
+                  {loadingSave ? "Saving..." : "Save"}
+                </button>
+                <button
+                  onClick={() => {
+                    setEditing(false);
+                    setProfilePreview(userData.profilePic || avatars[0]);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+
+          {actionMsg && <p className="action-msg">{actionMsg}</p>}
+        </div>
       </div>
 
-      {/* Movie or TV Show Details */}
-      {loadingDetails ? (
-        <p>Loading details...</p>
-      ) : selectedItemDetails ? (
-        <div className="media-details">
-          <h3>{selectedItemDetails.title || selectedItemDetails.name}</h3>
-          <p>{selectedItemDetails.overview}</p>
-          <button
-            className="add-to-watchlist"
-            onClick={() => handleAddToWatchList('planToWatch', selectedItemDetails)}
-          >
-            Add to Plan to Watch
-          </button>
-          <button
-            className="add-to-watched"
-            onClick={() => handleAddToWatchList('watched', selectedItemDetails)}
-          >
-            Mark as Watched
-          </button>
-        </div>
-      ) : null}
+      {/* WATCHLISTS */}
+      <div className="watchlist-section">
+        <h3>Plan to Watch</h3>
+        {userData.planToWatch.length === 0 ? (
+          <p>No movies or shows yet.</p>
+        ) : (
+          <div className="watchlist-grid">
+            {userData.planToWatch.map((item) => (
+              <div key={item.id} className="watchlist-card">
+                {/* Link to Details Page */}
+                <Link
+                  to={item.media_type === "tv" ? `/tv/${item.id}` : `/movie/${item.id}`}
+                  className="watchlist-poster-link"
+                >
+                  <img src={getPosterUrl(item)} alt={item.title || item.name} className="watchlist-poster" />
+                </Link>
+
+                <div className="watchlist-title">{item.title || item.name}</div>
+                <div className="watchlist-year">{getYear(item)}</div>
+
+                <div className="watchlist-actions">
+                  <button onClick={() => handleMoveToWatched(item)}>Mark as Watched</button>
+                  <button onClick={() => handleRemoveFromList(item.id)}>Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <h3>Watched</h3>
+        {userData.watched.length === 0 ? (
+          <p>No watched items yet.</p>
+        ) : (
+          <div className="watchlist-grid">
+            {userData.watched.map((item) => (
+              <div key={item.id} className="watchlist-card">
+                <Link
+                  to={item.media_type === "tv" ? `/tv/${item.id}` : `/movie/${item.id}`}
+                  className="watchlist-poster-link"
+                >
+                  <img src={getPosterUrl(item)} alt={item.title || item.name} className="watchlist-poster" />
+                </Link>
+
+                <div className="watchlist-title">{item.title || item.name}</div>
+                <div className="watchlist-year">{getYear(item)}</div>
+
+                <div className="watchlist-actions">
+                  <button onClick={() => handleMoveToPlan(item)}>Move to Plan</button>
+                  <button onClick={() => handleRemoveFromList(item.id)}>Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
