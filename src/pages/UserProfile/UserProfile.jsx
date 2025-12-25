@@ -10,6 +10,7 @@ import avatar3 from "../../assets/avatar3.jpg";
 import avatar4 from "../../assets/avatar4.jpg";
 import avatar5 from "../../assets/avatar5.jpg";
 import avatar6 from "../../assets/avatar6.jpg";
+import avatar7 from "../../assets/avatar7.png";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const UserProfile = () => {
   const [loadingSave, setLoadingSave] = useState(false);
   const [actionMsg, setActionMsg] = useState("");
 
-  const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6];
+  const avatars = [avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7];
 
   // Load user data
   useEffect(() => {
@@ -149,6 +150,7 @@ const UserProfile = () => {
               <label>
                 Name:
                 <input type="text" value={nameInput} onChange={(e) => setNameInput(e.target.value)} />
+                <br />
               </label>
 
               <label>

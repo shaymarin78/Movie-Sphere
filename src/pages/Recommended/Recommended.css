@@ -1,11 +1,11 @@
 .recommended {
-  padding: 30px;
+  padding: 60px;
   background-color: #141414;
   color: white;
 }
 
 .recommended h2 {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   font-size: 28px;
 }
 

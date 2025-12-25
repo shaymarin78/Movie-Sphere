@@ -7,39 +7,90 @@
   margin-bottom: 20px;
 }
 
+/* ---------------- REVIEW CARD ---------------- */
 .review-preview {
   display: block;
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
   margin-bottom: 15px;
-  text-decoration: none;
   color: #333;
   transition: all 0.3s ease;
   cursor: pointer;
-  max-height: 80px; /* collapsed height */
+
+  max-height: 90px;       /* collapsed */
   overflow: hidden;
 }
 
+/* EXPANDED STATE */
 .review-preview.expanded {
-  max-height: 1000px; /* expanded height */
+  max-height: 2000px;     /* large enough for edit textarea */
+  overflow: visible;
 }
 
+/* Hover */
 .review-preview:hover {
   background-color: #f0f0f0;
   transform: scale(1.02);
 }
 
+/* Title */
 .review-preview h4 {
   font-size: 1.2rem;
   margin-bottom: 10px;
 }
 
+/* Content */
 .review-preview p {
   font-size: 0.9rem;
   color: #666;
   margin: 0;
+  white-space: pre-wrap;
 }
+
+/* ---------------- EDIT TEXTAREA ---------------- */
+.review-preview textarea {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+/* ---------------- REVIEW ACTIONS ---------------- */
+.review-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.review-actions button {
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Edit */
+.review-actions button:first-child {
+  background: #4a90e2;
+  color: white;
+}
+
+/* Delete */
+.review-actions button:last-child {
+  background: #ff4d4f;
+  color: white;
+}
+
+.review-actions button:hover {
+  opacity: 0.85;
+}
+
+/* ---------------- ADD REVIEW ---------------- */
 .add-review {
   margin-bottom: 20px;
   display: flex;
@@ -67,23 +118,6 @@
   transition: 0.3s ease;
 }
 
-.add-review button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.delete-btn {
-  background: #ff4d4f;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  margin-top: 8px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: 0.2s ease;
-}
-
-.delete-btn:hover {
-  background: #d9363e;
+.add-review button:hover {
+  background-color: #4cae4c;
 }

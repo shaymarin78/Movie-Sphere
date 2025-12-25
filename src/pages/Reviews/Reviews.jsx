@@ -1,35 +1,42 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { auth, db } from "../../firebase";
-import { doc, getDoc, setDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import "./Reviews.css";
 
 const Reviews = () => {
   const { type, id } = useParams();
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [expandedReview, setExpandedReview] = useState(null);
-  const [userReview, setUserReview] = useState(""); // text area value
-  const [message, setMessage] = useState("");
 
-  // Fetch TMDB reviews
+  const [tmdbReviews, setTmdbReviews] = useState([]);
+  const [userReviews, setUserReviews] = useState([]);
+
+  const [expandedReview, setExpandedReview] = useState(null);
+  const [userReview, setUserReview] = useState("");
+
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState("");
+
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // ---------------- FETCH TMDB REVIEWS ----------------
   useEffect(() => {
     const fetchTMDBReviews = async () => {
       try {
         const res = await fetch(
           `https://api.themoviedb.org/3/${type}/${id}/reviews?language=en-US&page=1`,
           {
-            method: "GET",
             headers: {
               accept: "application/json",
-              Authorization: "Bearer YOUR_BEARER_TOKEN",
+              Authorization:
+                "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxNTI0NjY1ZGY4YzI5NWU3YzFlZDg1YjQwMDQ2MTg1YyIsIm5iZiI6MTc0NjA0NTgzMC4xMDYsInN1YiI6IjY4MTI4Yjg2MTE1YjkyYTczMmEwZWJhZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.iuBlFIRD2TRTPWN1BF7MiJopk3IaAe51zo6mX8q52oM",
             },
           }
         );
         const data = await res.json();
-        setReviews(data.results || []);
+        setTmdbReviews(data.results || []);
       } catch (err) {
-        console.error("Error fetching reviews:", err);
+        console.error("TMDB review error:", err);
       } finally {
         setLoading(false);
       }
@@ -38,88 +45,74 @@ const Reviews = () => {
     fetchTMDBReviews();
   }, [type, id]);
 
-  // Fetch your website reviews from Firebase
-  useEffect(() => {
-    const fetchUserReviews = async () => {
-      try {
-        const docRef = doc(db, "reviews", `${type}_${id}`);
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const data = snap.data();
-          if (data.reviews) {
-            // prepend user reviews so they appear first
-            setReviews((prev) => [...data.reviews, ...prev]);
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching user reviews:", err);
-      }
-    };
-
-    fetchUserReviews();
-  }, [type, id]);
-
-  // ---------------- Submit Review ----------------
-  const handleSubmitReview = async () => {
-    if (!auth.currentUser) {
-      setMessage("Please login to submit a review.");
-      setTimeout(() => setMessage(""), 2500);
-      return;
-    }
-    if (!userReview.trim()) return;
-
-    try {
-      const docRef = doc(db, "reviews", `${type}_${id}`);
-      const snap = await getDoc(docRef);
-
-      const newReview = {
-        id: `user_${auth.currentUser.uid}_${Date.now()}`,
-        author: auth.currentUser.displayName || "User",
-        authorId: auth.currentUser.uid,
-        content: userReview.trim(),
-      };
-
-      if (!snap.exists()) {
-        await setDoc(docRef, { reviews: [newReview] });
-      } else {
-        await updateDoc(docRef, {
-          reviews: [...snap.data().reviews, newReview],
-        });
-      }
-
-      setReviews((prev) => [newReview, ...prev]); // show at top
-      setUserReview("");
-      setMessage("Review submitted successfully!");
-      setTimeout(() => setMessage(""), 2500);
-    } catch (err) {
-      console.error("Error submitting review:", err);
-      setMessage("Failed to submit review.");
-      setTimeout(() => setMessage(""), 2500);
-    }
+  // ---------------- FETCH USER REVIEWS ----------------
+  const loadUserReviews = async () => {
+    const ref = doc(db, "reviews", `${type}_${id}`);
+    const snap = await getDoc(ref);
+    setUserReviews(snap.exists() ? snap.data().reviews || [] : []);
   };
 
-  // ---------------- Delete Review ----------------
-  const handleDeleteReview = async (reviewId) => {
-    if (!window.confirm("Are you sure you want to delete this review?")) return;
+  useEffect(() => {
+    loadUserReviews();
+  }, [type, id]);
 
-    try {
-      const docRef = doc(db, "reviews", `${type}_${id}`);
-      const snap = await getDoc(docRef);
-      if (snap.exists()) {
-        const filteredReviews = snap
-          .data()
-          .reviews.filter((r) => r.id !== reviewId);
+  // ---------------- SUBMIT REVIEW ----------------
+  const handleSubmitReview = async () => {
+    if (!auth.currentUser || !userReview.trim()) return;
 
-        await updateDoc(docRef, { reviews: filteredReviews });
-        setReviews((prev) => prev.filter((r) => r.id !== reviewId));
-        setMessage("Review deleted successfully!");
-        setTimeout(() => setMessage(""), 2500);
-      }
-    } catch (err) {
-      console.error("Failed to delete review:", err);
-      setMessage("Failed to delete review.");
-      setTimeout(() => setMessage(""), 2500);
+    const ref = doc(db, "reviews", `${type}_${id}`);
+    const snap = await getDoc(ref);
+
+    const newReview = {
+      id: `user_${auth.currentUser.uid}_${Date.now()}`,
+      author: auth.currentUser.displayName || "User",
+      authorId: auth.currentUser.uid,
+      content: userReview.trim(),
+    };
+
+    if (!snap.exists()) {
+      await setDoc(ref, { reviews: [newReview] });
+    } else {
+      await updateDoc(ref, {
+        reviews: [...snap.data().reviews, newReview],
+      });
     }
+
+    await loadUserReviews();
+    setUserReview("");
+    setMessage("Review added!");
+    setTimeout(() => setMessage(""), 2000);
+  };
+
+  // ---------------- DELETE REVIEW ----------------
+  const handleDelete = async (reviewId) => {
+    if (!window.confirm("Delete this review?")) return;
+
+    const ref = doc(db, "reviews", `${type}_${id}`);
+    const snap = await getDoc(ref);
+
+    const updated = snap
+      .data()
+      .reviews.filter((r) => r.id !== reviewId);
+
+    await updateDoc(ref, { reviews: updated });
+    setUserReviews(updated);
+  };
+
+  // ---------------- EDIT REVIEW ----------------
+  const handleEditSave = async (reviewId) => {
+    const ref = doc(db, "reviews", `${type}_${id}`);
+    const snap = await getDoc(ref);
+
+    const updated = snap.data().reviews.map((r) =>
+      r.id === reviewId ? { ...r, content: editingText } : r
+    );
+
+    await updateDoc(ref, { reviews: updated });
+
+    setUserReviews(updated);
+    setEditingId(null);
+    setEditingText("");
   };
 
   if (loading) return <p>Loading reviews...</p>;
@@ -128,7 +121,7 @@ const Reviews = () => {
     <div className="reviews-page">
       <h2>Reviews</h2>
 
-      {/* Add Your Review */}
+      {/* ADD REVIEW */}
       {auth.currentUser && (
         <div className="add-review">
           <textarea
@@ -136,49 +129,77 @@ const Reviews = () => {
             onChange={(e) => setUserReview(e.target.value)}
             placeholder="Write your review..."
           />
-          <button onClick={handleSubmitReview}>Submit Review</button>
-          {message && <div className="action-message">{message}</div>}
+          <button onClick={handleSubmitReview}>Submit</button>
+          {message && <p className="action-message">{message}</p>}
         </div>
       )}
 
-      {reviews.length === 0 ? (
-        <p>No reviews available.</p>
-      ) : (
-        reviews.map((review) => (
-          <div
-            key={review.id}
-            className={`review-preview ${
-              expandedReview === review.id ? "expanded" : ""
-            }`}
-            onClick={() =>
-              setExpandedReview(
-                expandedReview === review.id ? null : review.id
-              )
-            }
-          >
-            <h4>✍️ {review.author}</h4>
+      {[...userReviews, ...tmdbReviews].map((review) => (
+        <div
+          key={review.id}
+          className={`review-preview ${
+            expandedReview === review.id ? "expanded" : ""
+          }`}
+          onClick={() =>
+            setExpandedReview(
+              expandedReview === review.id ? null : review.id
+            )
+          }
+        >
+          <h4>✍️ {review.author}</h4>
+
+          {/* EDIT MODE */}
+          {editingId === review.id ? (
+            <>
+              <textarea
+                value={editingText}
+                onClick={(e) => e.stopPropagation()}
+                onChange={(e) => setEditingText(e.target.value)}
+              />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditSave(review.id);
+                }}
+              >
+                Save
+              </button>
+            </>
+          ) : (
             <p>
               {expandedReview === review.id
                 ? review.content
                 : `${review.content.slice(0, 150)}...`}
             </p>
+          )}
 
-            {/* Delete button for user's own reviews */}
-            {auth.currentUser?.uid === review.authorId && (
+          {/* USER ACTIONS */}
+          {auth.currentUser?.uid === review.authorId && (
+            <div className="review-actions">
               <button
-                className="delete-btn"
                 onClick={(e) => {
-                  e.stopPropagation(); // prevent expand toggle
-                  handleDeleteReview(review.id);
+                  e.stopPropagation();
+                  setEditingId(review.id);
+                  setEditingText(review.content);
+                }}
+              >
+                ✏️ Edit
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(review.id);
                 }}
               >
                 🗑 Delete
               </button>
-            )}
-          </div>
-        ))
-      )}
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
+
 export default Reviews;
